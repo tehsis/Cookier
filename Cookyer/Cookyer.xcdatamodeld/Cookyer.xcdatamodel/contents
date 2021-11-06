@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19461" systemVersion="21A559" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+    <entity name="Ingredient" representedClassName="Ingredient" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="belongsToManyRecipes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Recipe_Ingredients" inverseName="usesIngredient" inverseEntity="Recipe_Ingredients"/>
+    </entity>
+    <entity name="Photo" representedClassName="Photo" syncable="YES" codeGenerationType="class">
+        <attribute name="url" optional="YES" attributeType="URI"/>
+        <relationship name="belongsToRecipe" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recipe" inverseName="hasManyPhotos" inverseEntity="Recipe"/>
+    </entity>
+    <entity name="Recipe" representedClassName="Recipe" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="procedure" optional="YES" attributeType="String"/>
+        <relationship name="hasManyIngredients" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Recipe_Ingredients" inverseName="belongsToRecipe" inverseEntity="Recipe_Ingredients"/>
+        <relationship name="hasManyPhotos" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Photo" inverseName="belongsToRecipe" inverseEntity="Photo"/>
+    </entity>
+    <entity name="Recipe_Ingredients" representedClassName="Recipe_Ingredients" syncable="YES" codeGenerationType="class">
+        <attribute name="quantity" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="unit" optional="YES" attributeType="String"/>
+        <relationship name="belongsToRecipe" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recipe" inverseName="hasManyIngredients" inverseEntity="Recipe"/>
+        <relationship name="usesIngredient" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Ingredient" inverseName="belongsToManyRecipes" inverseEntity="Ingredient"/>
+    </entity>
+    <elements>
+        <element name="Ingredient" positionX="366.09375" positionY="-261.43359375" width="128" height="73"/>
+        <element name="Photo" positionX="-317.0546875" positionY="-301.6328125" width="128" height="59"/>
+        <element name="Recipe" positionX="-112.19921875" positionY="-107.0859375" width="117.38671875" height="103"/>
+        <element name="Recipe_Ingredients" positionX="145.98046875" positionY="-107.03515625" width="128" height="103"/>
+    </elements>
+</model>
