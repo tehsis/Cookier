@@ -1,7 +1,7 @@
 //
 //  Persistence.swift
 //  Cookyer
-//
+//.
 //  Created by Pablo Terradillos on 11/3/21.
 //
 
@@ -10,12 +10,14 @@ import CoreData
 
 struct PersistenceController {
     static let shared = PersistenceController()
+    
+    static var recipes: [Recipe]?
 
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
         
-        let recipes = [
+        recipes = [
             Recipe(context: viewContext, name: "Salmon con hongos", procedure: "Corta el salmon"),
             Recipe(context: viewContext, name: "Spaghetti Carbonara", procedure: "Ponele crema  ")
         ]
@@ -29,16 +31,16 @@ struct PersistenceController {
         ]
         
         let recipe_ingredients = [
-            Recipe_Ingredients(context: viewContext, recipe: recipes[1], ingredient: ingredients[1], quantity: 100, unit: "gr"),
-            Recipe_Ingredients(context: viewContext, recipe: recipes[1], ingredient: ingredients[2], quantity: 10, unit: "gr"),
-            Recipe_Ingredients(context: viewContext, recipe: recipes[1], ingredient: ingredients[3], quantity: 100, unit: "unit"),
-            Recipe_Ingredients(context: viewContext, recipe: recipes[1], ingredient: ingredients[4], quantity: 20, unit: "gr")
+            Recipe_Ingredients(context: viewContext, recipe: recipes![1], ingredient: ingredients[1], quantity: 100, unit: "gr", recipeID: recipes![1].id ?? UUID(), ingredientID: ingredients[1].id ?? UUID()),
+            Recipe_Ingredients(context: viewContext, recipe: recipes![1], ingredient: ingredients[2], quantity: 10, unit: "gr", recipeID: recipes![1].id ?? UUID(), ingredientID: ingredients[1].id ?? UUID()),
+            Recipe_Ingredients(context: viewContext, recipe: recipes![1], ingredient: ingredients[3], quantity: 100, unit: "unit", recipeID: recipes![1].id ?? UUID(), ingredientID: ingredients[1].id ?? UUID()),
+            Recipe_Ingredients(context: viewContext, recipe: recipes![1], ingredient: ingredients[4], quantity: 20, unit: "gr", recipeID: recipes![1].id ?? UUID(), ingredientID: ingredients[1].id ?? UUID())
         ]
-        
-//        recipes[1].addToHasManyIngredients(recipe_ingredients[0])
-//        recipes[1].addToHasManyIngredients(recipe_ingredients[1])
-//        recipes[1].addToHasManyIngredients(recipe_ingredients[2])
-//        recipes[1].addToHasManyIngredients(recipe_ingredients[3])
+            
+            recipes![1].addToHasManyIngredients(recipe_ingredients[0])
+            recipes![1].addToHasManyIngredients(recipe_ingredients[1])
+            recipes![1].addToHasManyIngredients(recipe_ingredients[2])
+            recipes![1].addToHasManyIngredients(recipe_ingredients[3])
 
         do {
             try viewContext.save()
@@ -51,13 +53,17 @@ struct PersistenceController {
         return result
     }()
 
-    let container: NSPersistentCloudKitContainer
+    let container: NSPersistentContainer
 
     init(inMemory: Bool = false) {
-        container = NSPersistentCloudKitContainer(name: "Cookyer")
+        container = NSPersistentContainer(name: "Cookyer")
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
+        
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
+        
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
@@ -73,6 +79,8 @@ struct PersistenceController {
                 */
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
+            
+            print(storeDescription.url!)
         })
     }
 }

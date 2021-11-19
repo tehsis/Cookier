@@ -10,11 +10,17 @@ import SwiftUI
 @main
 struct CookyerApp: App {
     let persistenceController = PersistenceController.shared
+    let dataImporter = DataImporter(persistentContainer: PersistenceController.shared.container)
+
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+            RecipeList()
+                .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+
+                    dataImporter.runImport()
+                }
         }
     }
 }
