@@ -54,6 +54,8 @@ class AddRecipeViewModel: ObservableObject {
     }
     
     func uploadRecipe() {
+        let imageData = newPhoto.jpegData(compressionQuality: 1)
+        
         
     }
 }
